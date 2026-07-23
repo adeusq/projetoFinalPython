@@ -158,6 +158,12 @@ nunca falha por causa do LLM. Saída: arquivo em `reports/relatorio_<data>.md` e
 └── .env.example
 ```
 
+## Apresentação final dos resultados
+
+[docs/apresentacao_final.html](docs/apresentacao_final.html) — abra no navegador para uma apresentação
+navegável com a arquitetura, as 4 DAGs, o modelo dimensional e os resultados reais dos dois modelos de ML
+e do relatório narrado por IA generativa.
+
 ## Fontes de dados
 
 - **PostgreSQL de origem** (fornecido para este trabalho): `srv1236151.hstgr.cloud:5433`,

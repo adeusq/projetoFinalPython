@@ -1,0 +1,501 @@
+<title>Pipeline de Dados Governamentais do Ceará — Resultados</title>
+<style>
+  :root{
+    --bg:#F4F6F4; --bg-raised:#FFFFFF; --ink:#12201C; --ink-soft:#4B5C56;
+    --accent:#0E6E5A; --accent-strong:#0A4F41; --accent-soft:#DCEBE5;
+    --line:rgba(18,32,28,.14);
+    --gold:#9C6B1F; --gold-bg:#F3E7D2;
+    --brick:#A23B2E; --brick-bg:#F4DEDA;
+    --font-display:Georgia,'Iowan Old Style','Palatino Linotype','URW Palladio',serif;
+    --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0E1613; --bg-raised:#131E1A; --ink:#E8EFEC; --ink-soft:#A8B8B2;
+      --accent:#3FBFA0; --accent-strong:#6ED9BE; --accent-soft:#16332B;
+      --line:rgba(232,239,236,.16);
+      --gold:#D9A85B; --gold-bg:#2E2416;
+      --brick:#E08072; --brick-bg:#35201D;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1613; --bg-raised:#131E1A; --ink:#E8EFEC; --ink-soft:#A8B8B2;
+    --accent:#3FBFA0; --accent-strong:#6ED9BE; --accent-soft:#16332B;
+    --line:rgba(232,239,236,.16);
+    --gold:#D9A85B; --gold-bg:#2E2416;
+    --brick:#E08072; --brick-bg:#35201D;
+  }
+  :root[data-theme="light"]{
+    --bg:#F4F6F4; --bg-raised:#FFFFFF; --ink:#12201C; --ink-soft:#4B5C56;
+    --accent:#0E6E5A; --accent-strong:#0A4F41; --accent-soft:#DCEBE5;
+    --line:rgba(18,32,28,.14);
+    --gold:#9C6B1F; --gold-bg:#F3E7D2;
+    --brick:#A23B2E; --brick-bg:#F4DEDA;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--font-body);
+    font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent-soft); color:var(--accent-strong);}
+
+  .deck{scroll-snap-type:y proximity;}
+  section.slide{
+    min-height:100vh; width:100%;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:clamp(2rem,6vw,5rem) clamp(1.25rem,6vw,6rem);
+    scroll-snap-align:start;
+    border-bottom:1px solid var(--line);
+    position:relative;
+  }
+  .slide-inner{max-width:920px; margin:0 auto; width:100%;}
+  .slide-inner.wide{max-width:1180px;}
+
+  .eyebrow{
+    font-family:var(--font-mono); font-size:.72rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent); font-weight:600;
+    display:flex; align-items:center; gap:.6em; margin-bottom:1.1rem;
+  }
+  .eyebrow::before{content:""; width:1.6em; height:1px; background:var(--accent);}
+
+  h1,h2,h3{font-family:var(--font-display); text-wrap:balance; margin:0 0 .5em 0; font-weight:400;}
+  h1{font-size:clamp(2.4rem,5.4vw,4.1rem); line-height:1.05; letter-spacing:-.01em;}
+  h2{font-size:clamp(1.7rem,3.4vw,2.5rem); line-height:1.12; color:var(--ink);}
+  h3{font-size:1.22rem; color:var(--ink);}
+  p{margin:0 0 1em 0; max-width:64ch; color:var(--ink-soft);}
+  p.lead{font-size:1.15rem; color:var(--ink); max-width:56ch;}
+  strong{color:var(--ink); font-weight:600;}
+  a{color:var(--accent-strong);}
+
+  .tag{
+    display:inline-flex; align-items:center; gap:.5em; font-family:var(--font-mono);
+    font-size:.78rem; padding:.32em .8em; border-radius:100px; border:1px solid var(--line);
+    color:var(--ink-soft); background:var(--bg-raised);
+  }
+  .tag-row{display:flex; flex-wrap:wrap; gap:.55rem; margin:1.4rem 0;}
+
+  /* ---- Cover ---- */
+  .cover{justify-content:space-between;}
+  .cover-top{display:flex; justify-content:space-between; align-items:flex-start; gap:2rem; flex-wrap:wrap;}
+  .cover-mark{
+    font-family:var(--font-mono); font-size:.78rem; color:var(--ink-soft); text-align:right;
+    line-height:1.5;
+  }
+  .cover-title{margin:auto 0;}
+  .cover-title .kicker{font-family:var(--font-mono); font-size:.85rem; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:1rem; display:block;}
+  .cover-sub{font-size:1.2rem; color:var(--ink-soft); max-width:46ch; margin-top:1rem;}
+  .cover-bottom{display:flex; justify-content:space-between; align-items:flex-end; gap:2rem; flex-wrap:wrap;
+    border-top:1px solid var(--line); padding-top:1.4rem;}
+  .cover-stat{font-family:var(--font-mono); font-size:.8rem; color:var(--ink-soft);}
+  .cover-stat b{display:block; font-family:var(--font-display); font-size:1.5rem; color:var(--ink); font-weight:400;}
+
+  /* ---- Stat tiles ---- */
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:1px;
+    background:var(--line); border:1px solid var(--line); margin:1.8rem 0; border-radius:4px; overflow:hidden;}
+  .stat{background:var(--bg-raised); padding:1.3rem 1.4rem;}
+  .stat .n{font-family:var(--font-display); font-size:2rem; font-variant-numeric:tabular-nums;
+    color:var(--ink); display:block; line-height:1.1;}
+  .stat .l{font-size:.82rem; color:var(--ink-soft); margin-top:.35rem; display:block;}
+  .stat.accent .n{color:var(--accent-strong);}
+  .stat.warn .n{color:var(--gold);}
+  .stat.crit .n{color:var(--brick);}
+
+  /* ---- Bar compare ---- */
+  .barcompare{margin:1.6rem 0 1rem 0;}
+  .bar-row{display:grid; grid-template-columns:11rem 1fr 8rem; align-items:center; gap:1rem; margin-bottom:.85rem;}
+  .bar-row .label{font-size:.86rem; color:var(--ink-soft); text-align:right;}
+  .bar-track{background:var(--accent-soft); border-radius:3px; height:1.6rem; overflow:hidden; position:relative;}
+  .bar-fill{background:var(--accent); height:100%; border-radius:3px 0 0 3px;
+    display:flex; align-items:center;}
+  .bar-row .val{font-family:var(--font-mono); font-size:.86rem; font-variant-numeric:tabular-nums; color:var(--ink);}
+
+  /* ---- Architecture flow ---- */
+  .flow{display:flex; align-items:stretch; gap:0; margin:2rem 0; flex-wrap:wrap;}
+  .flow-stage{flex:1 1 150px; background:var(--bg-raised); border:1px solid var(--line); border-radius:6px;
+    padding:1.1rem 1.1rem; position:relative; min-width:150px;}
+  .flow-stage .stage-label{font-family:var(--font-mono); font-size:.68rem; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--accent); display:block; margin-bottom:.4rem;}
+  .flow-stage .stage-title{font-family:var(--font-display); font-size:1.15rem;}
+  .flow-stage .stage-desc{font-size:.8rem; color:var(--ink-soft); margin-top:.4rem; max-width:none;}
+  .flow-arrow{display:flex; align-items:center; justify-content:center; color:var(--ink-soft);
+    font-size:1.3rem; padding:0 .5rem; flex:0 0 auto;}
+
+  /* ---- Two-col ---- */
+  .cols{display:grid; grid-template-columns:1.1fr 1fr; gap:3rem; align-items:start;}
+  @media (max-width:800px){.cols{grid-template-columns:1fr;}}
+
+  ul.clean{list-style:none; margin:0; padding:0;}
+  ul.clean li{padding:.55rem 0; border-bottom:1px solid var(--line); font-size:.95rem; color:var(--ink-soft);}
+  ul.clean li:last-child{border-bottom:none;}
+  ul.clean b{color:var(--ink);}
+
+  ol.steps{list-style:none; margin:0; padding:0; counter-reset:step;}
+  ol.steps li{counter-increment:step; padding:.7rem 0 .7rem 2.4rem; position:relative;
+    border-bottom:1px solid var(--line); font-size:.92rem; color:var(--ink-soft);}
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{content:counter(step,decimal-leading-zero); position:absolute; left:0; top:.65rem;
+    font-family:var(--font-mono); font-size:.72rem; color:var(--accent); font-weight:600;}
+  ol.steps b{color:var(--ink);}
+
+  table{width:100%; border-collapse:collapse; margin:1.4rem 0; font-size:.86rem;}
+  th,td{text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line);}
+  th{font-family:var(--font-mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--ink-soft); font-weight:600;}
+  td{color:var(--ink); font-variant-numeric:tabular-nums;}
+  td.mono{font-family:var(--font-mono); font-size:.82rem;}
+  .table-wrap{overflow-x:auto;}
+  .score{font-family:var(--font-mono); font-weight:600;}
+  .score.high{color:var(--brick);}
+
+  .callout{border-left:3px solid var(--accent); background:var(--accent-soft); padding:1rem 1.3rem;
+    border-radius:0 6px 6px 0; margin:1.5rem 0;}
+  .callout p{margin:0; color:var(--ink); max-width:none;}
+  .callout.warn{border-color:var(--gold); background:var(--gold-bg);}
+  .callout.crit{border-color:var(--brick); background:var(--brick-bg);}
+
+  .report-quote{
+    background:var(--bg-raised); border:1px solid var(--line); border-radius:8px; padding:1.6rem 1.8rem;
+    margin:1.6rem 0; position:relative;
+  }
+  .report-quote::before{content:"“"; font-family:var(--font-display); font-size:3.5rem; color:var(--accent-soft);
+    position:absolute; top:-.3rem; left:1rem; line-height:1;}
+  .report-quote p{margin:0 0 .8em 0; color:var(--ink); position:relative; z-index:1;}
+  .report-quote p:last-child{margin-bottom:0;}
+  .report-quote .attrib{font-family:var(--font-mono); font-size:.72rem; color:var(--ink-soft); margin-top:1rem;}
+
+  .badge-ok{display:inline-flex; align-items:center; gap:.4em; font-family:var(--font-mono); font-size:.78rem;
+    color:var(--accent-strong); background:var(--accent-soft); padding:.25em .7em; border-radius:100px;}
+  .badge-ok::before{content:"✓";}
+
+  footer.pagefoot{position:absolute; bottom:1.4rem; left:clamp(1.25rem,6vw,6rem); right:clamp(1.25rem,6vw,6rem);
+    display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:.68rem;
+    color:var(--ink-soft); opacity:.7;}
+
+  @media (prefers-reduced-motion:no-preference){
+    section.slide{animation:rise .5s ease-out both;}
+    @keyframes rise{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+  }
+  @media print{
+    section.slide{min-height:auto; page-break-after:always; border-bottom:none;}
+    footer.pagefoot{display:none;}
+  }
+</style>
+
+<div class="deck">
+
+<!-- ============ SLIDE 1 — COVER ============ -->
+<section class="slide cover">
+  <div class="cover-top">
+    <span class="tag">Trabalho Final · Engenharia de Dados e IA</span>
+    <span class="cover-mark">Ceará Transparente<br>dados_publicos · api-dados-abertos.cearatransparente.ce.gov.br</span>
+  </div>
+  <div class="cover-title">
+    <span class="kicker">ETL · Data Warehouse · Hadoop · Machine Learning</span>
+    <h1>Pipeline de Dados<br>Governamentais do<br>Estado do Ceará</h1>
+    <p class="cover-sub">Da extração incremental de contratos e empenhos públicos até a
+    detecção de anomalias e a previsão de pagamentos — construído e validado com dados reais.</p>
+  </div>
+  <div class="cover-bottom">
+    <div class="cover-stat">Execução de ponta a ponta<b>4 DAGs · Airflow 2.9.3</b></div>
+    <div class="cover-stat">Volume processado<b>31.168 contratos</b></div>
+    <div class="cover-stat">Valor sob análise<b>R$ 5,57 bilhões</b></div>
+    <div class="cover-stat">Gerado em<b>23 jul. 2026</b></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2 — CONTEXTO ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="eyebrow">Contexto e problema</span>
+    <h2>Duas fontes, três perguntas que ninguém conseguia responder de forma integrada</h2>
+    <p class="lead">O Ceará publica dados de execução orçamentária em um banco PostgreSQL e contratos
+    públicos em uma API REST separada. Cruzá-los manualmente é inviável em escala — e sem esse cruzamento,
+    três perguntas de controle ficam sem resposta:</p>
+    <ol class="steps">
+      <li><b>Rastreabilidade financeira</b> — de cada contrato assinado, quanto já foi pago via ordem
+      bancária, e quanto ainda está apenas empenhado? Há contratos pagos acima do valor firmado?</li>
+      <li><b>Detecção de anomalias</b> — existem contratos de alto valor via dispensa ou inexigibilidade de
+      licitação? Credores com histórico de infração estão recebendo novos contratos?</li>
+      <li><b>Previsão e planejamento</b> — com base no histórico, é possível estimar o volume de pagamentos
+      do próximo trimestre por órgão?</li>
+    </ol>
+  </div>
+  <footer class="pagefoot"><span>Pipeline Ceará Transparente</span><span>02 / 12</span></footer>
+</section>
+
+<!-- ============ SLIDE 3 — ARQUITETURA ============ -->
+<section class="slide">
+  <div class="slide-inner wide">
+    <span class="eyebrow">Arquitetura</span>
+    <h2>Padrão medallion, de ponta a ponta</h2>
+    <p class="lead">Bronze preserva a fonte bruta; Silver aplica qualidade e tipagem; Gold entrega um
+    modelo dimensional pronto para análise e para os modelos de ML.</p>
+
+    <div class="flow">
+      <div class="flow-stage">
+        <span class="stage-label">Fontes</span>
+        <div class="stage-title">Postgres + API</div>
+        <p class="stage-desc">Origem remota real (1,4M+ empenhos) e API pública de contratos (617k registros)</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-stage">
+        <span class="stage-label">Bronze · HDFS</span>
+        <div class="stage-title">Raw incremental</div>
+        <p class="stage-desc">Parquet/JSON por janela de extração, sem transformação</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-stage">
+        <span class="stage-label">Silver · HDFS</span>
+        <div class="stage-title">Qualidade</div>
+        <p class="stage-desc">Tipagem, deduplicação, CPF/CNPJ normalizado, particionado ano/mês</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-stage">
+        <span class="stage-label">Gold · Postgres</span>
+        <div class="stage-title">Dimensional</div>
+        <p class="stage-desc">Estrela com SCD2 em dim_credor, fato_contrato particionada por ano</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-stage">
+        <span class="stage-label">ML + IA</span>
+        <div class="stage-title">Inferência</div>
+        <p class="stage-desc">Isolation Forest, XGBoost quantílico e relatório narrado por LLM</p>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">Apache Airflow 2.9.3</span>
+      <span class="tag">Hadoop HDFS 3.2.1</span>
+      <span class="tag">PostgreSQL 15</span>
+      <span class="tag">scikit-learn</span>
+      <span class="tag">XGBoost</span>
+      <span class="tag">OpenAI gpt-4o-mini</span>
+      <span class="tag">Docker Compose</span>
+    </div>
+  </div>
+  <footer class="pagefoot"><span>Pipeline Ceará Transparente</span><span>03 / 12</span></footer>
+</section>
+
+<!-- ============ SLIDE 4 — DAGs ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="eyebrow">Orquestração</span>
+    <h2>4 DAGs encadeadas por Datasets — sem horário fixo, sem sensor externo</h2>
+    <p class="lead">Cada DAG dispara a próxima automaticamente ao publicar seu Dataset de saída
+    (data-aware scheduling do Airflow 2.x). Todas as quatro foram executadas de ponta a ponta com dados reais.</p>
+    <ul class="clean">
+      <li><b>dag_bronze_extract</b> — extração incremental do Postgres de origem e da API de contratos,
+      com validação mínima de schema. <span class="badge-ok">success</span></li>
+      <li><b>dag_silver_transform</b> — consolida todo o histórico incremental da Bronze, deduplica e
+      enriquece. <span class="badge-ok">success</span></li>
+      <li><b>dag_gold_load</b> — upsert das dimensões (SCD2 em dim_credor) e das fatos no Data Warehouse.
+      <span class="badge-ok">success</span></li>
+      <li><b>dag_ml_inference</b> — treina/aplica os dois modelos e gera o relatório narrado.
+      <span class="badge-ok">success</span></li>
+    </ul>
+  </div>
+  <footer class="pagefoot"><span>Pipeline Ceará Transparente</span><span>04 / 12</span></footer>
+</section>
+
+<!-- ============ SLIDE 5 — MODELO DIMENSIONAL ============ -->
+<section class="slide">
+  <div class="slide-inner wide">
+    <span class="eyebrow">Camada Gold</span>
+    <h2>O Data Warehouse depois da carga real</h2>
+    <p class="lead">Modelo estrela: três tabelas fato e quatro dimensões, populadas a partir da janela de
+    demonstração (jan–jun/2026).</p>
+    <div class="stats">
+      <div class="stat accent"><span class="n">31.168</span><span class="l">fato_contrato</span></div>
+      <div class="stat accent"><span class="n">124.750</span><span class="l">fato_empenho</span></div>
+      <div class="stat accent"><span class="n">141.615</span><span class="l">fato_ordem_bancaria</span></div>
+      <div class="stat"><span class="n">15.821</span><span class="l">dim_credor (SCD2)</span></div>
+      <div class="stat"><span class="n">144</span><span class="l">dim_orgao</span></div>
+      <div class="stat"><span class="n">184</span><span class="l">dim_tempo</span></div>
+      <div class="stat"><span class="n">31</span><span class="l">dim_modalidade</span></div>
+    </div>
+    <p style="margin-top:.5rem">Particionamento por ano em <code>fato_contrato</code>; surrogate keys em
+    todas as dimensões; <code>dim_credor</code> versiona mudanças de razão social preservando histórico.</p>
+  </div>
+  <footer class="pagefoot"><span>Pipeline Ceará Transparente</span><span>05 / 12</span></footer>
+</section>
+
+<!-- ============ SLIDE 6 — Q1 RASTREABILIDADE ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="eyebrow">Questão 1 · Rastreabilidade financeira</span>
+    <h2>18,8% do valor contratado já foi efetivamente pago</h2>
+    <div class="barcompare">
+      <div class="bar-row">
+        <span class="label">Contratado</span>
+        <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
+        <span class="val">R$ 5,57 bi</span>
+      </div>
+      <div class="bar-row">
+        <span class="label">Pago</span>
+        <div class="bar-track"><div class="bar-fill" style="width:18.8%"></div></div>
+        <span class="val">R$ 1,05 bi</span>
+      </div>
+    </div>
+    <div class="callout crit">
+      <p><strong>15 contratos</strong> registram pagamento acima do valor originalmente contratado —
+      candidatos prioritários para auditoria pontual.</p>
+    </div>
+  </div>
+  <footer class="pagefoot"><span>Pipeline Ceará Transparente</span><span>06 / 12</span></footer>
+</section>
+
+<!-- ============ SLIDE 7 — Q2 ANOMALIAS ============ -->
+<section class="slide">
+  <div class="slide-inner wide">
+    <span class="eyebrow">Questão 2 · Modelo 1 — Isolation Forest</span>
+    <h2>O score de anomalia concorda com a heurística de controle — e vai além dela</h2>
+    <div class="cols">
+      <div>
+        <p>Sem rótulos de anomalia pré-definidos, validamos o modelo contra uma heurística simples:
+        contratos por <b>dispensa/inexigibilidade</b> com valor acima do percentil 95.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Grupo</th><th>Contratos</th><th>Score médio</th></tr></thead>
+            <tbody>
+              <tr><td>Fora da heurística</td><td class="mono">30.878</td><td>0,14</td></tr>
+              <tr><td>Heurística de suspeita</td><td class="mono">290</td><td>0,57</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:.85rem">O modelo pontua o grupo suspeito <b>4× mais alto</b> em média —
+        mas também captura padrões que a heurística isolada não vê.</p>
+      </div>
+      <div>
+        <h3 style="margin-bottom:.6rem">Top contratos por score</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Contrato</th><th>Valor</th><th>Score</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">042/2026</td><td>R$ 180,0 M</td><td class="score high">1,000</td></tr>
+              <tr><td class="mono">001/SEINFRA/2026</td><td>R$ 16,8 M</td><td class="score high">0,9995</td></tr>
+              <tr><td class="mono">267/2026</td><td>R$ 15,0 M</td><td class="score">0,9689</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout warn" style="margin-top:1.2rem">
+          <p><b>Instituto de Estudos, Pesquisas e Projetos da UECE (IEPRO)</b>, com histórico de infração,
+          recebeu 2 contratos somando <b>R$ 818.824</b>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="pagefoot"><span>Pipeline Ceará Transparente</span><span>07 / 12</span></footer>
+</section>
+
+<!-- ============ SLIDE 8 — Q3 PREVISAO ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="eyebrow">Questão 3 · Modelo 2 — XGBoost quantílico</span>
+    <h2>Previsão de pagamentos para 2026-Q4, com intervalo de confiança</h2>
+    <p class="lead">Regressão quantílica (p10 / p50 / p90) por órgão, usando trimestre, ano eleitoral,
+    valor pago no trimestre anterior e valor contratado acumulado como features.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Órgão</th><th>Previsto (p50)</th></tr></thead>
+        <tbody>
+          <tr><td>Coordenadoria Regional de Saúde – Fortaleza</td><td>R$ 1,37 bi</td></tr>
+          <tr><td>EEMTI Governador Adauto Bezerra</td><td>R$ 1,32 bi</td></tr>
+          <tr><td>Encargos Gerais do Estado</td><td>R$ 745,2 M</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <p>Com a janela de demonstração (6 meses), a maioria dos órgãos não atinge o mínimo de 5 trimestres
+      de histórico — o pipeline recorre automaticamente a uma previsão por persistência do último valor.
+      Ampliar <code>EXTRACT_START_DATE</code> para 2022 habilita o XGBoost para todos os órgãos.</p>
+    </div>
+  </div>
+  <footer class="pagefoot"><span>Pipeline Ceará Transparente</span><span>08 / 12</span></footer>
+</section>
+
+<!-- ============ SLIDE 9 — IA GENERATIVA ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="eyebrow">Componente opcional · IA Generativa</span>
+    <h2>Os dois modelos narrados em linguagem acessível — de verdade, pela API da OpenAI</h2>
+    <p class="lead">A cada execução da <code>dag_ml_inference</code>, o pipeline monta um relatório
+    executivo a partir dos dados reais do DW. Trecho gerado nesta execução:</p>
+    <div class="report-quote">
+      <p>“Do total contratado de <b>R$ 5.570.401.476,93</b>, R$ 1.049.210.176,88 já foram efetivamente
+      pagos (18,8%). Foram identificados <b>15 contratos</b> com pagamentos acima do valor originalmente
+      contratado — recomenda-se auditoria pontual.”</p>
+      <p>“Identificamos os 10 contratos com os maiores índices de anomalia (...) destaca-se o contrato com
+      a DBN – Deboni Sistemas Construtivos Ltda, no valor de aproximadamente R$ 180 milhões.”</p>
+      <div class="attrib">gpt-4o-mini · reports/relatorio_2026-07-23.md · dw.relatorio_insights</div>
+    </div>
+    <p style="font-size:.85rem">Se a API estiver indisponível, o pipeline não falha: recorre a um relatório
+    por template determinístico com os mesmos dados — a IA generativa é um complemento, nunca uma
+    dependência crítica.</p>
+  </div>
+  <footer class="pagefoot"><span>Pipeline Ceará Transparente</span><span>09 / 12</span></footer>
+</section>
+
+<!-- ============ SLIDE 10 — QUALIDADE / ENGENHARIA ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="eyebrow">Engenharia e qualidade</span>
+    <h2>14 testes unitários — e três bugs reais que eles não pegaram (mas a execução real, sim)</h2>
+    <p class="lead">A suíte cobre paginação da API, deduplicação Bronze→Silver e montagem das
+    dimensões/fatos com mocks. Rodar contra dados reais revelou problemas que só aparecem em escala:</p>
+    <ul class="clean">
+      <li><b>Timezone em datas da API</b> — <code>data_assinatura</code> vinha com offset (-03:00) e
+      quebrava a concatenação com datas naive do Postgres.</li>
+      <li><b>Fan-out no merge unidade gestora → órgão</b> — 7 unidades trocaram de órgão superior entre
+      anos, duplicando linhas em <code>fato_empenho</code>.</li>
+      <li><b>Consolidação incremental</b> — a camada Silver lia só o run mais recente da Bronze; corrigido
+      para acumular todo o histórico incremental.</li>
+    </ul>
+    <p style="font-size:.85rem;margin-top:1rem">Os três viraram testes de regressão adicionados à suíte.</p>
+  </div>
+  <footer class="pagefoot"><span>Pipeline Ceará Transparente</span><span>10 / 12</span></footer>
+</section>
+
+<!-- ============ SLIDE 11 — LIMITAÇÕES ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="eyebrow">Limitações conhecidas</span>
+    <h2>Transparência sobre o que ainda não é perfeito</h2>
+    <ul class="clean">
+      <li><b>Ligação empenho → contrato</b> é best-effort via <code>codcontrato</code>, que frequentemente
+      vem zerado nos dados de origem — não é uma FK íntegra.</li>
+      <li><b>Previsão trimestral</b> depende da profundidade do histórico carregado; a janela de demonstração
+      favorece o fallback de persistência sobre o XGBoost em boa parte dos órgãos.</li>
+      <li><b><code>dim_orgao.esfera</code></b> é aproximada a partir de <code>nomepoder</code>, já que a
+      origem não tem um campo de esfera explícito nessa tabela.</li>
+      <li><b>Banco de origem</b> não é containerizado — o pipeline conecta diretamente ao PostgreSQL real
+      fornecido para o curso, em vez de replicar 1,4M linhas localmente.</li>
+    </ul>
+  </div>
+  <footer class="pagefoot"><span>Pipeline Ceará Transparente</span><span>11 / 12</span></footer>
+</section>
+
+<!-- ============ SLIDE 12 — CONCLUSÃO ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <span class="eyebrow">Conclusão</span>
+    <h2>Um pipeline auditável, do dado bruto à recomendação</h2>
+    <p class="lead">As três perguntas de negócio do enunciado — rastreabilidade, anomalias e previsão —
+    têm hoje resposta automatizada, reprodutível e versionada, com as quatro DAGs validadas de ponta a
+    ponta sobre dados reais do Ceará Transparente.</p>
+    <div class="tag-row">
+      <span class="badge-ok">Bronze → Silver → Gold validado</span>
+      <span class="badge-ok">4 DAGs em produção</span>
+      <span class="badge-ok">2 modelos de ML + LLM</span>
+      <span class="badge-ok">14 testes de regressão</span>
+    </div>
+    <p style="margin-top:2rem; font-size:.85rem">Repositório, dicionário de dados, diagrama de arquitetura
+    e instruções de execução em <code>README.md</code>.</p>
+  </div>
+  <footer class="pagefoot"><span>Pipeline Ceará Transparente</span><span>12 / 12</span></footer>
+</section>
+
+</div>
