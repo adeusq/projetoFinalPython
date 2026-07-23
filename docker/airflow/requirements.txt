@@ -1,0 +1,14 @@
+apache-airflow-providers-postgres
+apache-airflow-providers-http
+psycopg2-binary
+python-dotenv
+requests
+pandas
+pyarrow
+numpy
+hdfs
+scikit-learn
+xgboost
+joblib
+openai
+tabulate
